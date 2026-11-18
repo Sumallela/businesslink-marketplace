@@ -1,0 +1,15 @@
+# secrets
+.env
+.streamlit/secrets.toml
+
+# data + ETL output (CSVs are ~105 MB; each teammate copies them in locally)
+data/*.csv
+rejects/*
+!rejects/.gitkeep
+
+# python
+venv/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/

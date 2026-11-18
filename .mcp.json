@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "businesslink-mysql": {
+      "type": "stdio",
+      "command": "python",
+      "args": ["-I", "scripts/mcp_mysql.py"]
+    }
+  }
+}

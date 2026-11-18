@@ -1,0 +1,64 @@
+# BusinessLink Marketplace - local stack
+#   db  : MySQL 8.4 (tables + users are created on first start from ./sql)
+#   etl : Python ETL, run on demand:  docker compose run --rm etl python -m etl.load_data --dry-run
+#   app : Streamlit viewer at http://localhost:8501 (read-only user)
+
+services:
+  db:
+    image: mysql:8.4
+    container_name: businesslink-db
+    env_file: .env
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_0900_ai_ci"]
+    ports:
+      - "127.0.0.1:3306:3306"        # localhost only, not visible on the network
+    volumes:
+      - mysqldata:/var/lib/mysql
+      - ./sql:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      # TCP ping only succeeds once first-start initialisation (schema + users) has finished
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  etl:
+    build:
+      context: .
+      dockerfile: docker/python.Dockerfile
+    image: businesslink-python
+    env_file: .env
+    environment:
+      DB_HOST: db                     # inside Docker the database is reached by service name
+      DB_PORT: 3306
+    volumes:
+      - ./:/app
+    depends_on:
+      db:
+        condition: service_healthy
+    profiles: ["tools"]               # not started by "docker compose up"; run with "docker compose run"
+
+  app:
+    image: businesslink-python
+    build:
+      context: .
+      dockerfile: docker/python.Dockerfile
+    container_name: businesslink-app
+    command: streamlit run app/app.py --server.address=0.0.0.0 --server.port=8501
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME}
+      VIEWER_USER: ${VIEWER_USER}
+      VIEWER_PASSWORD: ${VIEWER_PASSWORD}
+    ports:
+      - "127.0.0.1:8501:8501"
+    volumes:
+      - ./:/app
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  mysqldata:

@@ -1,0 +1,23 @@
+{
+  "dataset_type": "Synthetic B2B teaching adaptation of Olist marketplace transactions",
+  "source": "Olist Brazilian E-Commerce Public Dataset",
+  "counts": {
+    "buyer_organizations": 96096,
+    "suppliers": 3095,
+    "products": 32951,
+    "product_categories": 71,
+    "supplier_product_catalog": 34448,
+    "orders": 99441,
+    "order_items": 112650,
+    "payments": 103886,
+    "reviews": 99224,
+    "order_deliveries": 99441,
+    "postal_geolocation": 19015
+  },
+  "notes": [
+    "Original order and item transaction facts retained.",
+    "Buyer organization attributes, supplier descriptors, and catalog inventory fields are synthetic.",
+    "Historical prices are median observed item prices by supplier-product pair.",
+    "All transaction monetary values remain in BRL."
+  ]
+}
