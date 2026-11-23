@@ -1,15 +1,42 @@
-# secrets
+# Secrets & Configuration
 .env
+.env.local
 .streamlit/secrets.toml
 
-# data + ETL output (CSVs are ~105 MB; each teammate copies them in locally)
+# Data & ETL Output (CSVs are ~105 MB; not in git)
 data/*.csv
 rejects/*
 !rejects/.gitkeep
 
-# python
+# Database Backups
+*.sql
+*.sql.gz
+backups/
+
+# Python
 venv/
 .venv/
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+.Python
+env/
+*.egg-info/
+dist/
+build/
 .pytest_cache/
+.coverage
+htmlcov/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS
+Thumbs.db
+.DS_Store
